@@ -5,7 +5,7 @@ use chacha20poly1305::{
     ChaCha20Poly1305, KeyInit, Nonce,
 };
 
-use crate::codec::{err, key, magic, CodecExt};
+use crate::codec::{err, key, magic, CodecExt, CodecVersionExt};
 
 type PacketSequence = u32;
 
@@ -99,6 +99,19 @@ impl<'a> CodecExt<'a> for Packet {
             header: payload[4..headoff].to_vec(),
             body: payload[headoff..].to_vec(),
         })
+    }
+}
+
+impl CodecVersionExt for Packet {
+    fn major(&self) -> u8 {
+        (self.version.0 >> Self::MASK.trailing_ones()) as u8
+    }
+    fn minor(&self) -> u16 {
+        self.version.0 & Self::MASK
+    }
+
+    fn compose(&self) -> u16 {
+        self.version.0
     }
 }
 
