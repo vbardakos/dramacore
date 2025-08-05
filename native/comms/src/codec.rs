@@ -4,6 +4,14 @@ pub trait CodecExt<'a>: Sized {
     fn deserialize(ser: &'a [u8]) -> Result<Self, Self::Error>;
 }
 
+pub trait CodecVersionExt {
+    const MASK: u16 = 0x01FF;
+
+    fn major(&self) -> u8;
+    fn minor(&self) -> u16;
+    fn compose(&self) -> u16;
+}
+
 pub mod magic {
     pub const MAGIC: &[u8; 2] = b"\xFA\xCE";
 }
